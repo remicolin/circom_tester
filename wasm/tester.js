@@ -117,14 +117,18 @@ class WasmTester {
     async loadSymbols() {
         if (this.symbols) return;
         this.symbols = {};
-        const symsStr = await fs.promises.readFile(
-            path.join(this.dir, this.baseName + ".sym"),
-            "utf8"
-        );
-        const lines = symsStr.split("\n");
-        for (let i = 0; i < lines.length; i++) {
-            const arr = lines[i].split(",");
-            if (arr.length != 4) continue;
+        const symFilePath = path.join(this.dir, this.baseName + ".sym");
+
+        const fileStream = fs.createReadStream(symFilePath);
+
+        const rl = readline.createInterface({
+            input: fileStream,
+            crlfDelay: Infinity
+        });
+
+        for await (const line of rl) {
+            const arr = line.split(",");
+            if (arr.length !== 4) continue;
             this.symbols[arr[3]] = {
                 labelIdx: Number(arr[0]),
                 varIdx: Number(arr[1]),
