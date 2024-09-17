@@ -12,6 +12,7 @@ const exec = util.promisify(require("child_process").exec);
 
 const readR1cs = require("r1csfile").readR1cs;
 const ZqField = require("ffjavascript").ZqField;
+const readline = require('readline');
 
 module.exports = wasm_tester;
 
